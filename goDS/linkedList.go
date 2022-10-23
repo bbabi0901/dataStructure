@@ -1,4 +1,4 @@
-package main
+package dataStructure
 
 import "fmt"
 
@@ -13,7 +13,7 @@ type LinkedList struct {
 	Tail      *Node
 }
 
-func (ll *LinkedList) GetAt(pos int) *Node {
+func GetAt(ll *LinkedList, pos int) *Node {
 	if pos < 1 || pos > ll.NodeCount {
 		return nil
 	}
@@ -24,7 +24,7 @@ func (ll *LinkedList) GetAt(pos int) *Node {
 	return curr
 }
 
-func (ll *LinkedList) Traverse() []*Node {
+func Traverse(ll *LinkedList) []*Node {
 	var answer []*Node
 	curr := ll.Head
 	for curr != nil {
@@ -46,9 +46,9 @@ func (ll *LinkedList) InsertAt(pos int, newNode *Node) error {
 			newNode.Next = ll.Tail.Next
 			ll.Tail = newNode
 		} else {
-			newNode.Next = ll.GetAt(pos - 1).Next
+			newNode.Next = GetAt(ll, pos-1).Next
 		}
-		ll.GetAt(pos - 1).Next = newNode
+		GetAt(ll, pos-1).Next = newNode
 	}
 	ll.NodeCount += 1
 	return nil
@@ -58,7 +58,7 @@ func (ll *LinkedList) PopAt(pos int) *Node {
 	if pos < 1 || pos > ll.NodeCount {
 		return nil
 	}
-	n := ll.GetAt(pos)
+	n := GetAt(ll, pos)
 	if pos == 1 {
 		if ll.NodeCount == 1 {
 			ll.Head = nil
@@ -67,7 +67,7 @@ func (ll *LinkedList) PopAt(pos int) *Node {
 			ll.Head = ll.Head.Next
 		}
 	} else {
-		prev := ll.GetAt(pos - 1)
+		prev := GetAt(ll, pos-1)
 		if pos == ll.NodeCount {
 			prev.Next = nil
 			ll.Tail = prev
@@ -88,21 +88,4 @@ func MakeNode(data interface{}) *Node {
 
 func MakeLinkedList() *LinkedList {
 	return &LinkedList{0, nil, nil}
-}
-
-func main() {
-	node1 := MakeNode(1)
-	node2 := MakeNode(2)
-	node1.Next = node2
-
-	list := MakeLinkedList()
-	list.NodeCount = 2
-	list.Head = node1
-	list.Tail = node2
-
-	fmt.Println(list.GetAt(1).Data)
-	fmt.Println(list.Traverse())
-	for _, node := range list.Traverse() {
-		fmt.Println(node.Data)
-	}
 }
