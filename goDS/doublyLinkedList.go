@@ -79,24 +79,10 @@ func (dll *DoublyLinkedList) Concat(followingDll *DoublyLinkedList) {
 	dll.NodeCount += followingDll.NodeCount
 }
 
-func MakeDoublyLinkedList() *DoublyLinkedList {
-	var dll *DoublyLinkedList
-	dll = &DoublyLinkedList{NodeCount: 0, Head: MakeNode(nil), Tail: MakeNode(nil)}
-	dll.Head.Prev = nil
-	dll.Tail.Next = nil
-	dll.Head.Next = dll.Tail
-	dll.Tail.Prev = dll.Head
-	return dll
-}
-
-func MakeNode(data interface{}) *Node {
-	return &Node{Data: data}
-}
-
 func Traverse(dll *DoublyLinkedList) []*Node {
 	var result []*Node
-	curr := dll.Head
-	for curr.Next.Next != nil {
+	curr := dll.Head.Next
+	for curr.Next != nil {
 		result = append(result, curr)
 		curr = curr.Next
 	}
@@ -105,8 +91,8 @@ func Traverse(dll *DoublyLinkedList) []*Node {
 
 func Reverse(dll *DoublyLinkedList) []*Node {
 	var result []*Node
-	curr := dll.Tail
-	for curr.Prev.Prev != nil {
+	curr := dll.Tail.Prev
+	for curr.Prev != nil {
 		result = append(result, curr)
 		curr = curr.Prev
 	}
@@ -133,4 +119,18 @@ func GetAt(dll *DoublyLinkedList, pos int) *Node {
 		}
 	}
 	return target
+}
+
+func MakeDoublyLinkedList() *DoublyLinkedList {
+	var dll *DoublyLinkedList
+	dll = &DoublyLinkedList{NodeCount: 0, Head: MakeNode(nil), Tail: MakeNode(nil)}
+	dll.Head.Prev = nil
+	dll.Tail.Next = nil
+	dll.Head.Next = dll.Tail
+	dll.Tail.Prev = dll.Head
+	return dll
+}
+
+func MakeNode(data interface{}) *Node {
+	return &Node{Data: data}
 }
