@@ -6,8 +6,9 @@ class Node:
 class LinkedList:
     def __init__(self):
         self.nodeCount = 0
-        self.head = None
+        self.head = Node(None)
         self.tail = None
+        self.head.next = self.tail
 
     # n번째 Node를 구하는 함수
     def get_at(self, pos):
@@ -22,67 +23,43 @@ class LinkedList:
 
     # Linked list를 끝까지 순회하는 함수
     def traverse(self):
-        answer = []
+        result = []
         curr = self.head
-        while curr != None:
-            answer.append(curr.data)
+        while curr.next :
+            result.append(curr.data)
             curr = curr.next
-        return answer
+        return result
 
-    # n번째에 새로운 Node를 삽입하는 함수
-    def insertAt(self, pos, newNode):
+    def insert_at(self, pos, new_node):
         if pos < 1 or pos > self.nodeCount + 1:
             return False
-
-        if pos == 1:
-            newNode.next = self.head
-            self.head = newNode
-
+        if pos != 1 and pos == self.nodeCount + 1:
+            prev = self.tail
         else:
-            if pos == self.nodeCount + 1:
-                prev = self.tail
-            else:
-                prev = self.getAt(pos - 1)
-            # 꼬리면 newNode.next = None
-            newNode.next = prev.next
-            prev.next = newNode
+            prev = self.getAt(pos - 1)
+        return self.insertAfter(prev, new_node)
 
-        if pos == self.nodeCount + 1:
-            self.tail = newNode
-
+    def insert_after(self, prev, new_node):
+        new_node.next = prev.next
+        if prev.next is None:
+            self.tail = new_node
+        prev.next = new_node
         self.nodeCount += 1
         return True
 
     # n번째의 Node를 pop하고 node의 data를 반환하는 함수
-    def popAt(self, pos):
+    def pop_after(self, prev):
+        target = prev.next
+        if prev is self.tail:
+            raise IndexError
+        if target is self.tail:
+            self.tail = prev
+        prev.next = target.next
+        self.nodeCount -= 1
+        return target.data
+
+    def pop_at(self, pos):
         if pos < 1 or pos > self.nodeCount:
             raise IndexError
-        # n번째 있던 node(not data)
-        n = self.getAt(pos)
-        if pos == 1:
-            if self.nodeCount == 1:
-                self.head = None
-                self.tail = None
-            else:
-                self.head = self.head.next
-        else:
-            prev = self.getAt(pos - 1)
-            if pos == self.nodeCount:
-                self.tail = prev
-                prev.next = None
-            else:
-                prev.next = n.next
-        self.nodeCount -= 1
-        return n.data
-
-node1 = Node(1)
-node2 = Node(3)
-node1.next = node2
-
-ll = LinkedList()
-ll.head = node1
-ll.tail = node2
-ll.nodeCount = 2
-
-print(ll.get_at(2).data)
-print(ll.traverse())
+        prev = self.getAt(pos - 1)
+        return self.popAfter(prev)
